@@ -1,21 +1,32 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+FILE* open_dev_random() {
+    return fopen("/dev/random", "rb");
+}
+
+int next_byte(FILE *f) {
+    int x;
+    if (!fread(&x, 1, 1, f)) {
+        printf("Can't read /dev/random");
+        exit(1);
+    }
+    return x;
+}
 
 void cmd_help() {
     printf("usage: nyarlyeh <command> [<args>]\n\n");
     printf("commands:\n");
-    printf("    m, mod     use modulo generator\n");
-    printf("    t, test    print modulo division frequency distribution\n");
+    printf("    m, mod <m> [<n>]              use modulo generator\n");
+    printf("    v, variant [<variants>]       choose variant from the list\n");
+    printf("    t, test <command> [<args>]    test command (eg print freq distribution)\n");
 }
 
 void cmd_mod(int m, int n) {
-    FILE *f = fopen("/dev/random", "rb");
-    int x;
+    FILE *f = open_dev_random();
     for (int i = n; i > 0; i--) {
-        if (!fread(&x, 1, 1, f)) {
-            printf("Can't read /dev/random");
-            return;
-        }
+        int x = next_byte(f);
         if (i > 1) {
             printf("%d ", x % m);
         } else {
@@ -24,16 +35,18 @@ void cmd_mod(int m, int n) {
     }
 }
 
+void cmd_variant(int count, char **variants) {
+    FILE *f = open_dev_random();
+    int x = next_byte(f);
+    printf("%s\n", variants[x % count]);
+}
+
 void cmd_test(int m, int n) {
     int freqs[m];
     memset(freqs, 0, m * sizeof(int));
-    FILE *f = fopen("/dev/random", "rb");
+    FILE *f = open_dev_random();
     for (int i = 0; i < n; i++) {
-        int x;
-        if (!fread(&x, 1, 1, f)) {
-            printf("Can't read /dev/random");
-            return;
-        }
+        int x = next_byte(f);
         freqs[x % m]++;
     }
     for (int i = 0; i < m; i++) {
@@ -85,6 +98,14 @@ int main(int argc, char **argv) {
                 printf("Unknown number of parameters!");
                 return 1;
         }
+    } else if (
+        argc > 2 && (
+            strcmp(argv[1], "variant") == 0 ||
+            strcmp(argv[1], "v") == 0
+        )
+    ) {
+        cmd_variant(argc - 2, argv + 2);
+        return 0;
     } else {
         cmd_help();
         return 0;
