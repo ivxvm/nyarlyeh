@@ -5,7 +5,7 @@ void cmd_test(int m, int n) {
     memset(freqs, 0, m * sizeof(int));
     WITH_FILE(f, "/dev/random", "rb", {
         for (int i = 0; i < n; i++) {
-            int x = file_next_byte(f);
+            unsigned int x = file_next_unsigned_int(f);
             freqs[x % m]++;
         }
     });

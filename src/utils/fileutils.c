@@ -2,13 +2,13 @@
 
 #define WITH_FILE(var, path, mode, call) { FILE *var = fopen(path, mode); call; fclose(var); }
 
-int file_next_byte(FILE *f) {
-    int x;
-    if (!fread(&x, 1, 1, f)) {
-        printf("Can't read /dev/random");
+unsigned int file_next_unsigned_int(FILE *f) {
+    unsigned int result;
+    if (!fread(&result, sizeof(unsigned int), 1, f)) {
+        printf("file_next_unsigned_int: can't read file");
         exit(1);
     }
-    return x;
+    return result;
 }
 
 int file_count_lines(FILE *f) {

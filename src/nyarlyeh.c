@@ -8,6 +8,7 @@
 #include "commands/mod.c"
 #include "commands/variant.c"
 #include "commands/file.c"
+#include "commands/dir.c"
 
 #include "utils/strutils.c"
 
@@ -81,6 +82,13 @@ int main(int argc, char **argv) {
             )
         ) {
             cmd_file(*(argv + 2));
+        } else if (
+            argc > 2 && (
+                strcmp(argv[1], "dir") == 0 ||
+                strcmp(argv[1], "d") == 0
+            )
+        ) {
+            cmd_dir(*(argv + 2));
         } else {
             cmd_help();
             continue;

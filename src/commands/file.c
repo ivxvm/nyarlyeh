@@ -5,9 +5,9 @@ void cmd_file(char *path) {
     WITH_FILE(f, path, "r", {
         lines_count = file_count_lines(f);
     });
-    int r;
+    unsigned int r;
     WITH_FILE(f, "/dev/random", "rb", {
-        r = file_next_byte(f);
+        r = file_next_unsigned_int(f);
     });
     int n = r % lines_count;
     char buf[256];
