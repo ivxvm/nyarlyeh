@@ -1,3 +1,5 @@
+#pragma once
+
 #define WITH_FILE(var, path, mode, call) { FILE *var = fopen(path, mode); call; fclose(var); }
 
 int file_next_byte(FILE *f) {
