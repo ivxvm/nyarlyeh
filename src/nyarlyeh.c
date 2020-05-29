@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
                 strcmp(argv[1], "d") == 0
             )
         ) {
-            cmd_dir(*(argv + 2));
+            cmd_dir(*(argv + 2), argc == 4 ? *(argv + 3) : NULL);
         } else {
             cmd_help();
             continue;
